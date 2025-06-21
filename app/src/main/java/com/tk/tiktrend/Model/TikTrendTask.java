@@ -27,7 +27,7 @@ public class TikTrendTask {
 
                     @Override
                     public void onNext(TikTrend data) {
-                        boolean isDev = true;
+                        boolean isDev = false;
                         if(isDev){
                             Gson gson = new GsonBuilder().setPrettyPrinting().create();
                             String prettyJsonString = gson.toJson(data);
