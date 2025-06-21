@@ -23,7 +23,9 @@ public class TikTrendTask {
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Observer<TikTrend>() {
                     @Override
-                    public void onSubscribe(Disposable d) {}
+                    public void onSubscribe(Disposable d) {
+
+                    }
 
                     @Override
                     public void onNext(TikTrend data) {

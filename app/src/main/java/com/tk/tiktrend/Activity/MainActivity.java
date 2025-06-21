@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements TikContract.View,
     private ViewPager2 scroll_pager;
     private boolean isMore = true;
     private boolean isLoading = false;
+    private boolean isFirstLoad = true;
     private List<TikProfile> tikProfileList = new ArrayList<>();
     private TikTrendAdapter tikTrendAdapter;
     private TikContract.Presenter tikTrendPresenter;
@@ -94,13 +95,7 @@ public class MainActivity extends AppCompatActivity implements TikContract.View,
         ll_file.setOnClickListener(this);
         tikTrendTxt.setText("Welcome to "+getString(R.string.app_name));
         tikTrendTxt.setTextColor(getResources().getColor(R.color.white));
-
-        if(isNetworkAvailable()){
-            tikTrendPresenter.loadTrend();
-        }else{
-            Toast.makeText(getApplicationContext(),"Please check network and try again",Toast.LENGTH_SHORT).show();
-        }
-
+        loadData();
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
@@ -134,6 +129,17 @@ public class MainActivity extends AppCompatActivity implements TikContract.View,
             }
         });
     }
+
+    private void loadData() {
+        if(!isNetworkAvailable()) {
+            Toast.makeText(getApplicationContext(),"Please check network and try again",Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(isFirstLoad){
+            tikTrendPresenter.loadTrend();
+        }
+    }
+
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -142,24 +148,24 @@ public class MainActivity extends AppCompatActivity implements TikContract.View,
     }
 
     private  void Refresh(){
+        if(!isNetworkAvailable()){
+            Toast.makeText(getApplicationContext(),"Please check network and try again",Toast.LENGTH_SHORT).show();
+            return;
+        }
         tikProfileList.clear();
         initialload = true;
-        loading= new DouYinLoadingDrawable();
-        if(isNetworkAvailable()){
-            tikTrendPresenter.loadTrend();
-        }else{
-            Toast.makeText(getApplicationContext(),"Please check network and try again",Toast.LENGTH_SHORT).show();
-        }
-
+        isFirstLoad = false;
+        tikTrendPresenter.loadTrend();
     }
 
     private void onLoadmoreTrend() {
-        initialload = false;
-        if(isNetworkAvailable()){
-            tikTrendPresenter.loadTrend();
-        }else{
+        if(!isNetworkAvailable()) {
             Toast.makeText(getApplicationContext(),"Please check network and try again",Toast.LENGTH_SHORT).show();
+            return;
         }
+        initialload = false;
+        isFirstLoad = false;
+        tikTrendPresenter.loadTrend();
 
     }
 
