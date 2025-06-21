@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+
+    <com.tk.tiktrend.CustomView.FullScreenVideoView
+        android:id="@+id/fullVideo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@+id/play_btn"
+        android:layout_centerInParent="true"
+        android:layout_width="45dp"
+        android:visibility="gone"
+        android:layout_height="45dp"
+        android:src="@mipmap/play_btn"
+        android:elevation="20dp"/>
+
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="10dp"
+        android:elevation="20dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="15dp"/>
+
+    <TextView
+        android:id="@+id/nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:layout_toRightOf="@+id/avatar"
+        android:layout_alignParentBottom="true"
+        android:textSize="20sp"
+        android:elevation="20dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="20dp"/>
+
+</RelativeLayout>
