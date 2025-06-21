@@ -39,11 +39,19 @@
         android:elevation="20dp"
         android:layout_height="45dp"/>
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/scroll_pager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/onload_more" />
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipe"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/onload_more">
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/scroll_pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <View
         android:id="@+id/blockview"

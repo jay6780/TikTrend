@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.Manifest;
@@ -18,6 +19,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -69,15 +71,21 @@ public class MainActivity extends AppCompatActivity implements TikContract.View,
     private LinearLayout navigationView,ll_file;
     private TextView tikTrendTxt;
     private View blockview;
+    private SwipeRefreshLayout swipe;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
+        );
         scroll_pager = findViewById(R.id.scroll_pager);
         onload_more = findViewById(R.id.onload_more);
         initial_loading = findViewById(R.id.initial_loading);
         getSupportActionBar().hide();
         title = findViewById(R.id.title);
+        swipe = findViewById(R.id.swipe);
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         ll_file = findViewById(R.id.ll_file);
@@ -95,6 +103,14 @@ public class MainActivity extends AppCompatActivity implements TikContract.View,
         ll_file.setOnClickListener(this);
         tikTrendTxt.setText("Welcome to "+getString(R.string.app_name));
         tikTrendTxt.setTextColor(getResources().getColor(R.color.white));
+
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Refresh();
+            }
+        });
+
         loadData();
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
@@ -124,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements TikContract.View,
                 playVideoAtPosition(position);
                 if(position >= tikProfileList.size() - 1&& !isLoading && isMore){
                     onLoadmoreTrend();
+                    blockview.setVisibility(View.GONE);
                 }
 
             }
@@ -136,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements TikContract.View,
             return;
         }
         if(isFirstLoad){
+            blockview.setVisibility(View.GONE);
             tikTrendPresenter.loadTrend();
         }
     }
@@ -149,13 +167,19 @@ public class MainActivity extends AppCompatActivity implements TikContract.View,
 
     private  void Refresh(){
         if(!isNetworkAvailable()){
+            if (swipe.isRefreshing()) {
+                swipe.setRefreshing(false);
+            }
             Toast.makeText(getApplicationContext(),"Please check network and try again",Toast.LENGTH_SHORT).show();
             return;
         }
-        tikProfileList.clear();
         initialload = true;
         isFirstLoad = false;
+        isLoading = true;
+        tikProfileList.clear();
         tikTrendPresenter.loadTrend();
+        blockview.setVisibility(View.GONE);
+        tikTrendAdapter.notifyDataSetChanged();
     }
 
     private void onLoadmoreTrend() {
@@ -165,8 +189,9 @@ public class MainActivity extends AppCompatActivity implements TikContract.View,
         }
         initialload = false;
         isFirstLoad = false;
+        isLoading = true;
+        blockview.setVisibility(View.GONE);
         tikTrendPresenter.loadTrend();
-
     }
 
     private void playVideoAtPosition(int position) {
@@ -245,6 +270,9 @@ public class MainActivity extends AppCompatActivity implements TikContract.View,
             }
             tikProfileList.addAll(tikProfileListdata);
             tikTrendAdapter.notifyDataSetChanged();
+            if (swipe.isRefreshing()) {
+                swipe.setRefreshing(false);
+            }
         }
 
     }
