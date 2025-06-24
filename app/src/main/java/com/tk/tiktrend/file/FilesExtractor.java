@@ -39,7 +39,7 @@ public class FilesExtractor {
             }
         }
 
-        File primaryDcim = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Manyakol.com");
+        File primaryDcim = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "TikTrend");
         if (primaryDcim.exists() && primaryDcim.isDirectory()) {
             String primaryPath = primaryDcim.getAbsolutePath();
             if (!dcimPaths.contains(primaryPath)) {
